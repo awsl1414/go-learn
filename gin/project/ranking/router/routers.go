@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 10:47:53
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-09 13:04:41
+ * @LastEditTime: 2024-07-09 13:22:07
  * @FilePath: /go-learn/gin/project/ranking/router/routers.go
  * @Description:
  *
@@ -20,7 +20,7 @@ func Router() *gin.Engine {
 
 	user := r.Group("/user")
 	{
-		user.GET("info", controllers.UserController{}.GetUserInfo)
+		user.GET("/info/:id/:name", controllers.UserController{}.GetUserInfo)
 		user.POST("/list", controllers.UserController{}.GetList)
 
 	}

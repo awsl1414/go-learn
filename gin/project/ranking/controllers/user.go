@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 10:44:24
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-09 13:03:48
+ * @LastEditTime: 2024-07-09 13:21:25
  * @FilePath: /go-learn/gin/project/ranking/controllers/user.go
  * @Description:
  *
@@ -16,7 +16,9 @@ import (
 type UserController struct{}
 
 func (u UserController) GetUserInfo(c *gin.Context) {
-	ReturnSuccess(c, 0, "success", "user info", 1)
+	id := c.Param("id")
+	name := c.Param("name")
+	ReturnSuccess(c, 0, name, id, 1)
 }
 
 func (u UserController) GetList(c *gin.Context) {
