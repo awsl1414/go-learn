@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 10:47:53
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-09 13:22:07
+ * @LastEditTime: 2024-07-09 13:36:19
  * @FilePath: /go-learn/gin/project/ranking/router/routers.go
  * @Description:
  *
@@ -23,6 +23,11 @@ func Router() *gin.Engine {
 		user.GET("/info/:id/:name", controllers.UserController{}.GetUserInfo)
 		user.POST("/list", controllers.UserController{}.GetList)
 
+	}
+
+	order := r.Group("/order")
+	{
+		order.POST("/list", controllers.OrderController{}.GetList)
 	}
 
 	return r
