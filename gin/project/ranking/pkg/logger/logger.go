@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 16:40:39
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-10 16:14:17
+ * @LastEditTime: 2024-07-10 18:43:42
  * @FilePath: /go-learn/gin/project/ranking/pkg/logger/logger.go
  * @Description:
  *
@@ -38,42 +38,58 @@ func init() {
 	logrus.SetReportCaller(false)
 }
 
+// 写入一般日志消息到指定文件
 func Write(msg string, filename string) {
 	setOutputFile(logrus.InfoLevel, filename)
 	logrus.Info(msg)
 }
+
+// 写入调试级别的日志消息
 func Debug(fields logrus.Fields, args ...interface{}) {
 	setOutputFile(logrus.DebugLevel, "debug")
-	logrus.WithFields(fields).Debug(args)
+	logrus.WithFields(fields).Debug(args...)
 
 }
+
+// 写入信息级别的日志消息
 func Info(fields logrus.Fields, args ...interface{}) {
 	setOutputFile(logrus.InfoLevel, "info")
-	logrus.WithFields(fields).Info(args)
-}
-func Warn(fields logrus.Fields, args ...interface{}) {
-	setOutputFile(logrus.WarnLevel, "warn")
-	logrus.WithFields(fields).Warn(args)
-}
-func Fatal(fields logrus.Fields, args ...interface{}) {
-	setOutputFile(logrus.FatalLevel, "fatal")
-	logrus.WithFields(fields).Fatal(args)
-}
-func Error(fields logrus.Fields, args ...interface{}) {
-	setOutputFile(logrus.ErrorLevel, "error")
-	logrus.WithFields(fields).Error(args)
-}
-func Panic(fields logrus.Fields, args ...interface{}) {
-	setOutputFile(logrus.PanicLevel, "panic")
-	logrus.WithFields(fields).Panic(args)
-}
-func Trace(fields logrus.Fields, args ...interface{}) {
-	setOutputFile(logrus.TraceLevel, "trace")
-	logrus.WithFields(fields).Trace(args)
+	logrus.WithFields(fields).Info(args...)
 }
 
+// 写入警告级别的日志消息
+func Warn(fields logrus.Fields, args ...interface{}) {
+	setOutputFile(logrus.WarnLevel, "warn")
+	logrus.WithFields(fields).Warn(args...)
+}
+
+// 写入严重错误级别的日志消息
+func Fatal(fields logrus.Fields, args ...interface{}) {
+	setOutputFile(logrus.FatalLevel, "fatal")
+	logrus.WithFields(fields).Fatal(args...)
+}
+
+// 写入错误级别的日志消息
+func Error(fields logrus.Fields, args ...interface{}) {
+	setOutputFile(logrus.ErrorLevel, "error")
+	logrus.WithFields(fields).Error(args...)
+}
+
+// 写入恐慌级别的日志消息
+func Panic(fields logrus.Fields, args ...interface{}) {
+	setOutputFile(logrus.PanicLevel, "panic")
+	logrus.WithFields(fields).Panic(args...)
+}
+
+// 写入跟踪级别的日志消息
+func Trace(fields logrus.Fields, args ...interface{}) {
+	setOutputFile(logrus.TraceLevel, "trace")
+	logrus.WithFields(fields).Trace(args...)
+}
+
+// 检查并创建日志目录
 func checkLogDir() {
-	if _, err := os.Stat(LOG_DIR); os.IsNotExist(err) {
+	if _, err := os.Stat(LOG_DIR); os.IsNotExist(err) { // 检查目录是否存在
 		err = os.MkdirAll(LOG_DIR, 0777)
 		if err != nil {
 			panic(fmt.Errorf("creat log dir '%s' err: %s", LOG_DIR, err))
@@ -81,6 +97,7 @@ func checkLogDir() {
 	}
 }
 
+// 创建日志文件
 func createLogFile(link string, logName string) *os.File {
 	timeStr := time.Now().Format("2006-01-02")
 	fileName := path.Join(LOG_DIR, logName+link+timeStr+".log")
@@ -95,20 +112,23 @@ func createLogFile(link string, logName string) *os.File {
 	return out
 
 }
+
+// 设置日志输出文件和日志级别
 func setOutputFile(level logrus.Level, logName string) {
 	// 加互斥锁保证线程安全 setOutputFile和logrus.SetOutput线程不安全
 	mu.Lock()
 	defer mu.Unlock()
 
-	checkLogDir()
+	checkLogDir() // 检查并创建日志目录
 
 	out := createLogFile("-", logName)
 
-	logrus.SetOutput(out)
-	logrus.SetLevel(level)
+	logrus.SetOutput(out)  // 设置日志输出
+	logrus.SetLevel(level) // 设置日志级别
 
 }
 
+// 返回 gin 的日志配置，用于将日志输出到文件和标准输出
 func LoggerToFile() gin.LoggerConfig {
 
 	checkLogDir()
@@ -135,6 +155,7 @@ func LoggerToFile() gin.LoggerConfig {
 
 }
 
+// gin 中间件，用于捕获 panic 并记录错误日志
 func Recover(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
