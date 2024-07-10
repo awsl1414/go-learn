@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 16:40:39
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-10 15:56:49
+ * @LastEditTime: 2024-07-10 16:14:17
  * @FilePath: /go-learn/gin/project/ranking/pkg/logger/logger.go
  * @Description:
  *
@@ -16,13 +16,17 @@ import (
 	"os"
 	"path"
 	"runtime/debug"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-var LOG_DIR string = "./runtime/log"
+var (
+	LOG_DIR string = "./runtime/log"
+	mu      sync.Mutex
+)
 
 func init() {
 	// 设置日志格式为json
@@ -81,18 +85,20 @@ func createLogFile(link string, logName string) *os.File {
 	timeStr := time.Now().Format("2006-01-02")
 	fileName := path.Join(LOG_DIR, logName+link+timeStr+".log")
 
-	var err error
-	os.Stderr, err = os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	out, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 
 	if err != nil {
 		fmt.Println("open log file err", err)
 
 	}
 
-	return os.Stderr
+	return out
 
 }
 func setOutputFile(level logrus.Level, logName string) {
+	// 加互斥锁保证线程安全 setOutputFile和logrus.SetOutput线程不安全
+	mu.Lock()
+	defer mu.Unlock()
 
 	checkLogDir()
 
@@ -123,7 +129,7 @@ func LoggerToFile() gin.LoggerConfig {
 				param.ErrorMessage,
 			)
 		},
-		Output: io.MultiWriter(os.Stdout, out),
+		Output: io.MultiWriter(os.Stdout, out), // 同时输出日志到文件和控制台
 	}
 	return conf
 
@@ -149,5 +155,6 @@ func Recover(c *gin.Context) {
 		}
 
 	}()
+
 	c.Next()
 }
