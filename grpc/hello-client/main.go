@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-14 10:39:22
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-14 16:24:56
+ * @LastEditTime: 2024-07-17 23:11:38
  * @FilePath: /go-learn/grpc/hello-client/main.go
  * @Description:
  *
@@ -16,12 +16,16 @@ import (
 	"log"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 )
 
 func main() {
+
+	creds, _ := credentials.NewClientTLSFromFile("grpc/key/test.pem", "*sailor.work") // serverNameOverride 应从浏览器获取
+
 	// 连接server端，此处禁用安全传输，没有加密和验证 grpc.Dial() 已弃用
-	conn, err := grpc.NewClient("127.0.0.1:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// conn, err := grpc.NewClient("127.0.0.1:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("127.0.0.1:9090", grpc.WithTransportCredentials(creds))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
