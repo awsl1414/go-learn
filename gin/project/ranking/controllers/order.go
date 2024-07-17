@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-09 11:27:33
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-09 16:02:31
+ * @LastEditTime: 2024-07-09 16:07:59
  * @FilePath: /go-learn/gin/project/ranking/controllers/order.go
  * @Description:
  *
