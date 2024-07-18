@@ -2,7 +2,7 @@
  * @Author: awsl1414 3030994569@qq.com
  * @Date: 2024-07-14 10:39:28
  * @LastEditors: awsl1414 3030994569@qq.com
- * @LastEditTime: 2024-07-17 23:05:28
+ * @LastEditTime: 2024-07-17 23:15:34
  * @FilePath: /go-learn/grpc/hello-server/main.go
  * @Description:
  *
@@ -29,7 +29,7 @@ func (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloR
 
 func main() {
 
-	creds, _ := credentials.NewServerTLSFromFile("grpc/key/test.pem", "grpc/key/test.key")
+	creds, _ := credentials.NewServerTLSFromFile("../key/test.pem", "../key/test.key")
 
 	// 开启端口
 	listen, _ := net.Listen("tcp", "127.0.0.1:9090")
